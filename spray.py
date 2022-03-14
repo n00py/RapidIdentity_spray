@@ -25,7 +25,6 @@ def guess_password(host, username, password):
         error_message = result["error"]["message"]
         return error_message
     # If there is something other than an error message, print full response
-    # I don't yet know what a success condition looks like
     except KeyError:
         try:
             if result["type"] == "complete":
